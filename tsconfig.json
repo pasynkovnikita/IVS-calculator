@@ -21,6 +21,8 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src"
+    "src",
+    "eslint.config.mjs",
+    "jest.config.js"
   ]
 }
