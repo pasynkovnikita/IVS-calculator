@@ -1,159 +1,194 @@
-import { KeyboardEvent } from 'react';
-
-export enum ButtonType {
+export enum E_BUTTON_TYPE {
   NUMERIC = 'NUMERIC',
   BASIC_OPERATION = 'BASIC_OPERATION',
   SCIENTIFIC = 'SCIENTIFIC',
-  CONTROL = 'CONTROL'
+  CONTROL = 'CONTROL',
 }
 
-export enum OperationType {
-  // Basic operations
+export enum E_OPERATION {
   ADD = '+',
   SUBTRACT = '-',
   MULTIPLY = '×',
   DIVIDE = '÷',
-  
-  // Scientific operations
+
   SQUARE_ROOT = '√',
   POWER = '^',
   FACTORIAL = '!',
   STANDARD_DEVIATION = 'σ',
-  
-  // Control operations
+
   CLEAR = 'AC',
   DELETE = 'del',
   EQUALS = '=',
   DECIMAL = '.',
-  
-  // Parentheses
+  SPACE = ' ',
+  ENTER = 'Enter',
+
   LEFT_PARENTHESIS = '(',
-  RIGHT_PARENTHESIS = ')'
+  RIGHT_PARENTHESIS = ')',
 }
 
-export type CalculatorButton = {
+export type TCalculatorButton = {
   value: string;
-  type: ButtonType;
-  operation?: OperationType;
+  type: E_BUTTON_TYPE;
+  operation?: E_OPERATION;
   display: string;
 };
 
-export type KeyMapping = {
+export type TKeyMapping = {
   key: string;
-  button: CalculatorButton;
+  button: TCalculatorButton;
 };
 
-export const CALCULATOR_BUTTONS: CalculatorButton[] = [
-  // Numeric buttons
-  ...[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => ({
+export const CALCULATOR_BUTTONS: Array<TCalculatorButton> = [
+  ...[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => ({
     value: num.toString(),
-    type: ButtonType.NUMERIC,
-    display: num.toString()
+    type: E_BUTTON_TYPE.NUMERIC,
+    display: num.toString(),
   })),
-  
-  // Basic operations
+
   {
-    value: OperationType.ADD,
-    type: ButtonType.BASIC_OPERATION,
-    operation: OperationType.ADD,
-    display: '+'
+    value: E_OPERATION.ADD,
+    type: E_BUTTON_TYPE.BASIC_OPERATION,
+    operation: E_OPERATION.ADD,
+    display: '+',
   },
   {
-    value: OperationType.SUBTRACT,
-    type: ButtonType.BASIC_OPERATION,
-    operation: OperationType.SUBTRACT,
-    display: '-'
+    value: E_OPERATION.SUBTRACT,
+    type: E_BUTTON_TYPE.BASIC_OPERATION,
+    operation: E_OPERATION.SUBTRACT,
+    display: '-',
   },
   {
-    value: OperationType.MULTIPLY,
-    type: ButtonType.BASIC_OPERATION,
-    operation: OperationType.MULTIPLY,
-    display: '×'
+    value: E_OPERATION.MULTIPLY,
+    type: E_BUTTON_TYPE.BASIC_OPERATION,
+    operation: E_OPERATION.MULTIPLY,
+    display: '×',
   },
   {
-    value: OperationType.DIVIDE,
-    type: ButtonType.BASIC_OPERATION,
-    operation: OperationType.DIVIDE,
-    display: '÷'
+    value: E_OPERATION.DIVIDE,
+    type: E_BUTTON_TYPE.BASIC_OPERATION,
+    operation: E_OPERATION.DIVIDE,
+    display: '÷',
   },
-  
-  // Scientific operations
+
   {
-    value: OperationType.SQUARE_ROOT,
-    type: ButtonType.SCIENTIFIC,
-    operation: OperationType.SQUARE_ROOT,
-    display: '√'
-  },
-  {
-    value: OperationType.POWER,
-    type: ButtonType.SCIENTIFIC,
-    operation: OperationType.POWER,
-    display: '^'
+    value: E_OPERATION.SQUARE_ROOT,
+    type: E_BUTTON_TYPE.SCIENTIFIC,
+    operation: E_OPERATION.SQUARE_ROOT,
+    display: '√',
   },
   {
-    value: OperationType.FACTORIAL,
-    type: ButtonType.SCIENTIFIC,
-    operation: OperationType.FACTORIAL,
-    display: '!'
+    value: E_OPERATION.POWER,
+    type: E_BUTTON_TYPE.SCIENTIFIC,
+    operation: E_OPERATION.POWER,
+    display: '^',
   },
   {
-    value: OperationType.STANDARD_DEVIATION,
-    type: ButtonType.SCIENTIFIC,
-    operation: OperationType.STANDARD_DEVIATION,
-    display: 'σ'
-  },
-  
-  // Control operations
-  {
-    value: OperationType.CLEAR,
-    type: ButtonType.CONTROL,
-    operation: OperationType.CLEAR,
-    display: 'AC'
+    value: E_OPERATION.FACTORIAL,
+    type: E_BUTTON_TYPE.SCIENTIFIC,
+    operation: E_OPERATION.FACTORIAL,
+    display: '!',
   },
   {
-    value: OperationType.DELETE,
-    type: ButtonType.CONTROL,
-    operation: OperationType.DELETE,
-    display: 'del'
+    value: E_OPERATION.STANDARD_DEVIATION,
+    type: E_BUTTON_TYPE.SCIENTIFIC,
+    operation: E_OPERATION.STANDARD_DEVIATION,
+    display: 'σ',
+  },
+
+  {
+    value: E_OPERATION.CLEAR,
+    type: E_BUTTON_TYPE.CONTROL,
+    operation: E_OPERATION.CLEAR,
+    display: 'AC',
   },
   {
-    value: OperationType.DECIMAL,
-    type: ButtonType.CONTROL,
-    operation: OperationType.DECIMAL,
-    display: '.'
+    value: E_OPERATION.DELETE,
+    type: E_BUTTON_TYPE.CONTROL,
+    operation: E_OPERATION.DELETE,
+    display: 'del',
   },
   {
-    value: OperationType.LEFT_PARENTHESIS,
-    type: ButtonType.CONTROL,
-    operation: OperationType.LEFT_PARENTHESIS,
-    display: '('
+    value: E_OPERATION.DECIMAL,
+    type: E_BUTTON_TYPE.CONTROL,
+    operation: E_OPERATION.DECIMAL,
+    display: '.',
   },
   {
-    value: OperationType.RIGHT_PARENTHESIS,
-    type: ButtonType.CONTROL,
-    operation: OperationType.RIGHT_PARENTHESIS,
-    display: ')'
-  }
+    value: E_OPERATION.LEFT_PARENTHESIS,
+    type: E_BUTTON_TYPE.CONTROL,
+    operation: E_OPERATION.LEFT_PARENTHESIS,
+    display: '(',
+  },
+  {
+    value: E_OPERATION.RIGHT_PARENTHESIS,
+    type: E_BUTTON_TYPE.CONTROL,
+    operation: E_OPERATION.RIGHT_PARENTHESIS,
+    display: ')',
+  },
+  {
+    value: E_OPERATION.EQUALS,
+    type: E_BUTTON_TYPE.CONTROL,
+    operation: E_OPERATION.EQUALS,
+    display: '=',
+  },
+  {
+    value: E_OPERATION.SPACE,
+    type: E_BUTTON_TYPE.CONTROL,
+    operation: E_OPERATION.SPACE,
+    display: 'Space',
+  },
+  {
+    value: E_OPERATION.ENTER,
+    type: E_BUTTON_TYPE.CONTROL,
+    operation: E_OPERATION.EQUALS,
+    display: 'Enter',
+  },
 ];
 
-export const KEY_MAPPINGS: KeyMapping[] = [
-  // Numeric keys
-  ...[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => ({
-    key: num.toString(),
-    button: CALCULATOR_BUTTONS.find(btn => btn.value === num.toString())!
-  })),
-  
-  // Operation keys
-  { key: '+', button: CALCULATOR_BUTTONS.find(btn => btn.operation === OperationType.ADD)! },
-  { key: '-', button: CALCULATOR_BUTTONS.find(btn => btn.operation === OperationType.SUBTRACT)! },
-  { key: '*', button: CALCULATOR_BUTTONS.find(btn => btn.operation === OperationType.MULTIPLY)! },
-  { key: '/', button: CALCULATOR_BUTTONS.find(btn => btn.operation === OperationType.DIVIDE)! },
-  
-  // Control keys
-  { key: 'Enter', button: CALCULATOR_BUTTONS.find(btn => btn.operation === OperationType.EQUALS)! },
-  { key: 'Backspace', button: CALCULATOR_BUTTONS.find(btn => btn.operation === OperationType.DELETE)! },
-  { key: 'Delete', button: CALCULATOR_BUTTONS.find(btn => btn.operation === OperationType.CLEAR)! },
-  { key: '.', button: CALCULATOR_BUTTONS.find(btn => btn.operation === OperationType.DECIMAL)! },
-  { key: '(', button: CALCULATOR_BUTTONS.find(btn => btn.operation === OperationType.LEFT_PARENTHESIS)! },
-  { key: ')', button: CALCULATOR_BUTTONS.find(btn => btn.operation === OperationType.RIGHT_PARENTHESIS)! }
-];
+export type TCalculatorLayout = {
+  basic: Array<E_OPERATION | string>;
+  extended: Array<E_OPERATION>;
+  scientific: Array<E_OPERATION>;
+};
+
+export const CALCULATOR_LAYOUT: TCalculatorLayout = {
+  basic: [
+    E_OPERATION.LEFT_PARENTHESIS,
+    E_OPERATION.RIGHT_PARENTHESIS,
+    E_OPERATION.DELETE,
+    '7',
+    '8',
+    '9',
+    '4',
+    '5',
+    '6',
+    '1',
+    '2',
+    '3',
+    E_OPERATION.CLEAR,
+    '0',
+    E_OPERATION.DECIMAL,
+  ],
+  extended: [
+    E_OPERATION.DIVIDE,
+    E_OPERATION.MULTIPLY,
+    E_OPERATION.SUBTRACT,
+    E_OPERATION.ADD,
+  ],
+  scientific: [
+    E_OPERATION.SQUARE_ROOT,
+    E_OPERATION.POWER,
+    E_OPERATION.FACTORIAL,
+    E_OPERATION.STANDARD_DEVIATION,
+  ],
+};
+
+export const KEY_MAPPINGS: Array<TKeyMapping> = Object.values(
+  CALCULATOR_BUTTONS
+).map((button) => {
+  return {
+    key: button.value,
+    button: button,
+  };
+});
