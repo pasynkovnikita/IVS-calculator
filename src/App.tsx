@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Button,
   TextField,
@@ -9,56 +9,120 @@ import {
   Stack,
 } from '@mui/material';
 import { ExpandMore } from '@mui/icons-material';
+import {
+  E_OPERATION,
+  TCalculatorButton,
+  CALCULATOR_BUTTONS,
+  KEY_MAPPINGS,
+  CALCULATOR_LAYOUT,
+} from './types/calculator';
 
 const CalculatorApp = () => {
   const [expression, setExpression] = useState('');
   const [result, setResult] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleButtonClick = (value: string) => {
-    if (value === 'AC') {
-      setExpression('');
-      setResult('');
+  useEffect(() => {
+    if (expression) {
+      try {
+        const evalResult = eval(expression);
+        const formattedResult = Number.isFinite(evalResult)
+          ? String(evalResult)
+          : 'Error';
+        setResult(formattedResult);
+      } catch {
+        setResult('Error');
+      }
     } else {
-      setExpression((prev) => prev + value);
+      setResult('');
+    }
+  }, [expression]);
+
+  const handleButtonClick = (button: TCalculatorButton) => {
+    const input = inputRef.current;
+    if (!input) return;
+    input.focus();
+
+    const currentPos = input.selectionStart ?? 0;
+    const selectionEnd = input.selectionEnd ?? 0;
+
+    const currentValue = input.value;
+    let newExp = currentValue;
+    let newCursorPos = currentPos;
+
+    if (button.operation === E_OPERATION.CLEAR) {
+      newExp = '';
+      newCursorPos = 0;
+      setResult(' ');
+    } else if (button.operation === E_OPERATION.DELETE) {
+      if (currentPos === 0) return;
+      newExp =
+        currentValue.slice(0, currentPos - 1) +
+        currentValue.slice(selectionEnd);
+      newCursorPos = currentPos - 1;
+    } else if (button.operation === E_OPERATION.EQUALS) {
+      try {
+        const evalResult = eval(currentValue);
+        const formattedResult = Number.isFinite(evalResult)
+          ? String(evalResult)
+          : 'Error';
+        newExp = formattedResult;
+        newCursorPos = formattedResult.length;
+        setResult(formattedResult);
+      } catch {
+        const errorMsg = 'Error';
+        newExp = errorMsg;
+        newCursorPos = errorMsg.length;
+        setResult(errorMsg);
+      }
+    } else {
+      const insertText =
+        button.operation === E_OPERATION.SPACE ? ' ' : button.display;
+      newExp =
+        currentValue.slice(0, currentPos) +
+        insertText +
+        currentValue.slice(selectionEnd);
+      newCursorPos = currentPos + insertText.length;
+    }
+
+    input.value = newExp;
+    input.setSelectionRange(newCursorPos, newCursorPos);
+
+    setExpression(newExp);
+  };
+
+  const handleKeyDown = (event: globalThis.KeyboardEvent) => {
+    const mapping = KEY_MAPPINGS.find((m) => m.key === event.key);
+    if (mapping) {
+      event.preventDefault();
+      handleButtonClick(mapping.button);
     }
   };
 
-  const computeResult = () => {
-    try {
-      // TODO: update with actual calculator lib when ready
-      const evalResult = eval(expression);
-      setResult(evalResult);
-    } catch (error) {
-      setResult('Error');
-    }
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  const findButton = (value: E_OPERATION | string): TCalculatorButton => {
+    const button = CALCULATOR_BUTTONS.find(
+      (btn) => btn.value === value || btn.operation === value
+    );
+    if (!button) throw new Error(`Button not  found: ${value}`);
+    return button;
   };
-  const baseButtons = [
-    '(',
-    ')',
-    'del',
-    '7',
-    '8',
-    '9',
-    '4',
-    '5',
-    '6',
-    '1',
-    '2',
-    '3',
-    'AC',
-    '0',
-    '.',
-  ];
 
-  const extendedFunctions = ['÷', '×', '-', '+'];
-
-  const scientificFunctions = ['√', '^', '!', 'σ'];
+  const baseButtons = CALCULATOR_LAYOUT.basic.map(findButton);
+  const extendedFunctions = CALCULATOR_LAYOUT.extended.map(findButton);
+  const scientificFunctions = CALCULATOR_LAYOUT.scientific.map(findButton);
 
   const renderBasicButtons = () => (
     <div className="grid grid-cols-3 gap-2">
       {baseButtons.map((btn) => (
         <Button
-          key={btn}
+          key={btn.value}
           variant="outlined"
           className="h-16"
           size="large"
@@ -67,7 +131,7 @@ const CalculatorApp = () => {
             fontSize: '32px',
           }}
         >
-          {btn}
+          {btn.display}
         </Button>
       ))}
     </div>
@@ -77,7 +141,7 @@ const CalculatorApp = () => {
     <div className="grid grid-cols-1 gap-2">
       {extendedFunctions.map((btn) => (
         <Button
-          key={btn}
+          key={btn.value}
           variant="outlined"
           className="h-16"
           color="info"
@@ -86,7 +150,7 @@ const CalculatorApp = () => {
             fontSize: '32px',
           }}
         >
-          {btn}
+          {btn.display}
         </Button>
       ))}
     </div>
@@ -96,7 +160,7 @@ const CalculatorApp = () => {
     <div className="grid grid-cols-1 gap-2">
       {scientificFunctions.map((btn) => (
         <Button
-          key={btn}
+          key={btn.value}
           variant="contained"
           color="secondary"
           className="h-16 text-xl"
@@ -105,7 +169,7 @@ const CalculatorApp = () => {
             fontSize: '32px',
           }}
         >
-          {btn}
+          {btn.display}
         </Button>
       ))}
     </div>
@@ -123,22 +187,30 @@ const CalculatorApp = () => {
             <Stack direction="row" spacing={1}>
               <TextField
                 label="Expression"
+                focused={!!expression}
                 variant="outlined"
-                value={expression}
                 fullWidth
+                inputRef={inputRef}
                 onChange={(e) => setExpression(e.target.value)}
+                value={expression}
               />
 
               <Button
                 variant="contained"
                 color="secondary"
-                onClick={computeResult}
+                onClick={() =>
+                  handleButtonClick(
+                    CALCULATOR_BUTTONS.find(
+                      (btn) => btn.operation === E_OPERATION.EQUALS
+                    )!
+                  )
+                }
                 sx={{
                   paddingX: '16px',
                   fontSize: '24px',
                 }}
               >
-                =
+                {E_OPERATION.EQUALS}
               </Button>
             </Stack>
 
