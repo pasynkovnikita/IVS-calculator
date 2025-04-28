@@ -8,8 +8,8 @@ export enum E_BUTTON_TYPE {
 export enum E_OPERATION {
   ADD = '+',
   SUBTRACT = '-',
-  MULTIPLY = '×',
   DIVIDE = '÷',
+  MULTIPLY = '×',
 
   SQUARE_ROOT = '√',
   POWER = '^',
