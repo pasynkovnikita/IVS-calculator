@@ -12,6 +12,7 @@ import js from '@eslint/js';
 import { FlatCompat } from '@eslint/eslintrc';
 
 const filename = fileURLToPath(import.meta.url);
+const baseDir = path.dirname(filename);
 const dirname = path.join(path.dirname(filename), 'src');
 const compat = new FlatCompat({
   baseDirectory: dirname,
@@ -55,7 +56,7 @@ export default defineConfig([
         },
 
         project: 'tsconfig.json',
-        tsconfigRootDir: '/Users/nikita/IdeaProjects/IVS-calculator',
+        tsconfigRootDir: baseDir,
       },
     },
 
