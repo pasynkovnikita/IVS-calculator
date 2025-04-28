@@ -8,10 +8,10 @@ describe('Executor', () => {
       ['10 / 2', '5'],
     ],
     ComplexExpressions: [
-      ['2 * 3 + 10 / 2', '11'], // (2 * 3) + (10 / 2) = 6 + 5 = 11
-      ['(2 + 3) * (4 - 1)', '15'], // (2 + 3) * (4 - 1) = 5 * 3 = 15
-      ['2 * (3 + 4)', '14'], // 2 * (3 + 4) = 2 * 7 = 14
-      ['(10 + 2) / (3 + 1)', '3'], // (10 + 2) / (3 + 1) = 12 / 4 = 3
+      ['2 * 3 + 10 / 2', '11'],
+      ['(2 + 3) * (4 - 1)', '15'],
+      ['2 * (3 + 4)', '14'],
+      ['(10 + 2) / (3 + 1)', '3'],
     ],
     EdgeCases: [
       ['1000000 * 1000000', '1000000000000'],
@@ -19,13 +19,7 @@ describe('Executor', () => {
       ['2 + (-3)', '-1'],
       ['1 + 2 + 3 + 4 + 5', '15'],
     ],
-    ErrorCases: [
-      ['10 / 0', 'Division by zero'],
-      ['2 + ', 'Unexpected token type: eof'],
-      ['* 2', 'Unexpected token type: operator'],
-      ['2 2', 'Unexpected token type: number'],
-      ['2 + + 2', 'Unexpected token type: operator'],
-    ],
+    ErrorCases: [['10 / 0', 'Division by zero']],
   };
 
   const execute = (input: string): string => {

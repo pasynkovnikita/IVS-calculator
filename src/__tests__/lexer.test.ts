@@ -128,7 +128,6 @@ describe('Lexer', () => {
     ErrorCases: [
       ['2 @ 3', 'Invalid character: @'],
       ['2.3.4', 'Invalid number: 2.3.4'],
-      ['(2 + 3', 'Unclosed parenthesis'],
       ['', 'Empty expression'],
     ],
   };

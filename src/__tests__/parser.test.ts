@@ -94,6 +94,11 @@ describe('Parser', () => {
       ['+', 'Unexpected token type: operator'],
       ['2 +', 'Unexpected token type: eof'],
       ['2 + * 3', 'Unexpected token type: operator'],
+      ['(2 + 3', 'Unclosed parenthesis'],
+      ['2 + ', 'Unexpected token type: eof'],
+      ['* 2', 'Unexpected token type: operator'],
+      ['2 2', 'Unexpected token type: number'],
+      ['2 + + 2', 'Unexpected token type: operator'],
     ],
   };
 
