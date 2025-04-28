@@ -55,7 +55,7 @@ export default defineConfig([
         },
 
         project: 'tsconfig.json',
-        tsconfigRootDir: '/Users/nikita/IdeaProjects/IVS-calculator',
+        tsconfigRootDir: __dirname,
       },
     },
 
