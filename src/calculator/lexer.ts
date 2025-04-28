@@ -129,6 +129,7 @@ export class Lexer {
     } else if (Lexer.TOKEN_MAPPING[char]) {
       return {
         type: Lexer.TOKEN_MAPPING[char],
+        value: char,
       };
     } else {
       throw new Error(`Invalid character: ${char}`);

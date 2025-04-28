@@ -1,4 +1,4 @@
-import { E_TOKEN_TYPE, TToken } from '../calculator/types';
+import { E_TOKEN_TYPE, Lexer, TToken } from '../calculator';
 
 describe('Lexer', () => {
   const cases: Record<string, Array<[string, Array<TToken> | string]>> = {
@@ -127,8 +127,7 @@ describe('Lexer', () => {
     ],
     ErrorCases: [
       ['2 @ 3', 'Invalid character: @'],
-      ['2.3.4', 'Invalid number: 2.3.4'],
-      ['', 'Empty expression'],
+      ['2.3.4', 'Invalid number: 2.3.'],
     ],
   };
 

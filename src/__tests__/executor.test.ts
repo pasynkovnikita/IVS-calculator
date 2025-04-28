@@ -1,3 +1,5 @@
+import { Executor, Lexer, Parser } from '../calculator';
+
 describe('Executor', () => {
   const cases: Record<string, Array<[string, string]>> = {
     BasicCalculations: [
