@@ -167,6 +167,7 @@ export default defineConfig([
       ],
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/interface-name-prefix': 'off',
+      '@typescript-eslint/no-unused-expressions': 'off',
       '@typescript-eslint/member-ordering': [
         'error',
         {
