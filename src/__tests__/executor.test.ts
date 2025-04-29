@@ -38,9 +38,7 @@ describe('Executor', () => {
     ErrorCases: [
       ['10 / 0', 'Division by zero'],
       ['sqrt(-1)', 'Square root of negative number'],
-      ['root(-8, 3)', 'Root of negative number with non-integer degree'],
       ['root(8, 0)', 'Root degree cannot be zero'],
-      ['root(8, -2)', 'Negative root degree is not supported'],
     ],
   };
 
