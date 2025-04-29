@@ -1,26 +1,306 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect, useRef } from 'react';
+import {
+  Button,
+  TextField,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
+  Stack,
+} from '@mui/material';
+import { ExpandMore } from '@mui/icons-material';
+import {
+  E_OPERATION,
+  TCalculatorButton,
+  CALCULATOR_BUTTONS,
+  KEY_MAPPINGS,
+  CALCULATOR_LAYOUT,
+} from './types/calculator';
 
-const App = () => {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+const CalculatorApp = () => {
+  const [expression, setExpression] = useState('');
+  const [result, setResult] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (expression) {
+      try {
+        const evalResult = eval(expression);
+        const formattedResult = Number.isFinite(evalResult)
+          ? String(evalResult)
+          : 'Error';
+        setResult(formattedResult);
+      } catch {
+        setResult('Error');
+      }
+    } else {
+      setResult('');
+    }
+  }, [expression]);
+
+  const handleButtonClick = (button: TCalculatorButton) => {
+    const input = inputRef.current;
+    if (!input) return;
+    input.focus();
+
+    const currentPos = input.selectionStart ?? 0;
+    const selectionEnd = input.selectionEnd ?? 0;
+
+    const currentValue = input.value;
+    let newExp = currentValue;
+    let newCursorPos = currentPos;
+
+    if (button.operation === E_OPERATION.CLEAR) {
+      newExp = '';
+      newCursorPos = 0;
+      setResult(' ');
+    } else if (button.operation === E_OPERATION.DELETE) {
+      if (currentPos === 0) return;
+      newExp =
+        currentValue.slice(0, currentPos - 1) +
+        currentValue.slice(selectionEnd);
+      newCursorPos = currentPos - 1;
+    } else if (button.operation === E_OPERATION.EQUALS) {
+      try {
+        const evalResult = eval(currentValue);
+        const formattedResult = Number.isFinite(evalResult)
+          ? String(evalResult)
+          : 'Error';
+        newExp = formattedResult;
+        newCursorPos = formattedResult.length;
+        setResult(formattedResult);
+      } catch {
+        const errorMsg = 'Error';
+        newExp = errorMsg;
+        newCursorPos = errorMsg.length;
+        setResult(errorMsg);
+      }
+    } else {
+      const insertText =
+        button.operation === E_OPERATION.SPACE ? ' ' : button.display;
+      newExp =
+        currentValue.slice(0, currentPos) +
+        insertText +
+        currentValue.slice(selectionEnd);
+      newCursorPos = currentPos + insertText.length;
+    }
+
+    input.value = newExp;
+    input.setSelectionRange(newCursorPos, newCursorPos);
+
+    setExpression(newExp);
+  };
+
+  const handleKeyDown = (event: globalThis.KeyboardEvent) => {
+    const mapping = KEY_MAPPINGS.find((m) => m.key === event.key);
+    if (mapping) {
+      event.preventDefault();
+      handleButtonClick(mapping.button);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  const findButton = (value: E_OPERATION | string): TCalculatorButton => {
+    const button = CALCULATOR_BUTTONS.find(
+      (btn) => btn.value === value || btn.operation === value
+    );
+    if (!button) throw new Error(`Button not  found: ${value}`);
+    return button;
+  };
+
+  const baseButtons = CALCULATOR_LAYOUT.basic.map(findButton);
+  const extendedFunctions = CALCULATOR_LAYOUT.extended.map(findButton);
+  const scientificFunctions = CALCULATOR_LAYOUT.scientific.map(findButton);
+
+  const renderBasicButtons = () => (
+    <div className="grid grid-cols-3 gap-2">
+      {baseButtons.map((btn) => (
+        <Button
+          key={btn.value}
+          variant="outlined"
+          className="h-16"
+          size="large"
+          onClick={() => handleButtonClick(btn)}
+          sx={{
+            fontSize: '32px',
+          }}
         >
-          Learn React
-        </a>
-      </header>
+          {btn.display}
+        </Button>
+      ))}
+    </div>
+  );
+
+  const renderExtendedButtons = () => (
+    <div className="grid grid-cols-1 gap-2">
+      {extendedFunctions.map((btn) => (
+        <Button
+          key={btn.value}
+          variant="outlined"
+          className="h-16"
+          color="info"
+          onClick={() => handleButtonClick(btn)}
+          sx={{
+            fontSize: '32px',
+          }}
+        >
+          {btn.display}
+        </Button>
+      ))}
+    </div>
+  );
+
+  const renderScientificButtons = () => (
+    <div className="grid grid-cols-1 gap-2">
+      {scientificFunctions.map((btn) => (
+        <Button
+          key={btn.value}
+          variant="contained"
+          color="secondary"
+          className="h-16 text-xl"
+          onClick={() => handleButtonClick(btn)}
+          sx={{
+            fontSize: '32px',
+          }}
+        >
+          {btn.display}
+        </Button>
+      ))}
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-purple-100 p-8">
+      <div className="max-w-7xl mx-auto grid grid-cols-2 gap-8">
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <Stack spacing={2}>
+            <Typography variant="h4" className="text-purple-800 mb-4">
+              Calculator
+            </Typography>
+
+            <Stack direction="row" spacing={1}>
+              <TextField
+                label="Expression"
+                focused={!!expression}
+                variant="outlined"
+                fullWidth
+                inputRef={inputRef}
+                onChange={(e) => setExpression(e.target.value)}
+                value={expression}
+              />
+
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() =>
+                  handleButtonClick(
+                    CALCULATOR_BUTTONS.find(
+                      (btn) => btn.operation === E_OPERATION.EQUALS
+                    )!
+                  )
+                }
+                sx={{
+                  paddingX: '16px',
+                  fontSize: '24px',
+                }}
+              >
+                {E_OPERATION.EQUALS}
+              </Button>
+            </Stack>
+
+            <TextField
+              label="Result"
+              fullWidth
+              variant="outlined"
+              value={result}
+            />
+            <div className="grid grid-cols-5 gap-2 last:gap-6">
+              <div className="col-span-3">{renderBasicButtons()}</div>
+              <div>{renderExtendedButtons()}</div>
+              <div>{renderScientificButtons()}</div>
+            </div>
+          </Stack>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <Stack spacing={2}>
+            <Typography variant="h4" className="text-purple-800 mb-4">
+              Help
+            </Typography>
+
+            <Stack spacing={0}>
+              <Accordion disableGutters>
+                <AccordionSummary expandIcon={<ExpandMore />}>
+                  <Typography>Basic Functions</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <b>Addition (+): Add two numbers.</b>
+                  <br />
+                  Example: 2 + 3 = 5
+                </AccordionDetails>
+                <AccordionDetails>
+                  <b>Subtraction (-): Subtract one number from another.</b>
+                  <br /> Example: 5 - 2 = 3
+                </AccordionDetails>
+
+                <AccordionDetails>
+                  <b>Multiplication (*): Multiply two numbers.</b>
+                  <br /> Example: 4 * 3 = 12
+                </AccordionDetails>
+
+                <AccordionDetails>
+                  <b>Division (/): Divide one number by another.</b>
+                  <br /> Example: 8 / 2 = 4
+                </AccordionDetails>
+
+                <AccordionDetails>
+                  Simply enter the first number, select the operator, enter the
+                  second number, and press =.
+                </AccordionDetails>
+              </Accordion>
+
+              <Accordion disableGutters>
+                <AccordionSummary expandIcon={<ExpandMore />}>
+                  <Typography>Additional Functions</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Accordion disableGutters>
+                    <AccordionSummary expandIcon={<ExpandMore />}>
+                      <Typography>Square Root (√)</Typography>
+                    </AccordionSummary>
+                  </Accordion>
+
+                  <Accordion disableGutters>
+                    <AccordionSummary expandIcon={<ExpandMore />}>
+                      <Typography>Power Function (^)</Typography>
+                    </AccordionSummary>
+                  </Accordion>
+
+                  <Accordion disableGutters>
+                    <AccordionSummary expandIcon={<ExpandMore />}>
+                      <Typography>Factorial Function (!)</Typography>
+                    </AccordionSummary>
+                  </Accordion>
+
+                  <Accordion disableGutters>
+                    <AccordionSummary expandIcon={<ExpandMore />}>
+                      <Typography>Standard Deviation Function (σ)</Typography>
+                    </AccordionSummary>
+                  </Accordion>
+                </AccordionDetails>
+              </Accordion>
+            </Stack>
+          </Stack>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default App;
+export default CalculatorApp;
