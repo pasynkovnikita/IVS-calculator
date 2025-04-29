@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Button,
   TextField,
@@ -16,27 +16,66 @@ import {
   KEY_MAPPINGS,
   CALCULATOR_LAYOUT,
 } from './types/calculator';
+import { Executor, Lexer, Parser, TNode, TToken } from './calculator';
 
 const CalculatorApp = () => {
   const [expression, setExpression] = useState('');
   const [result, setResult] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const compute = useCallback(
+    async () =>
+      new Promise<string>((resolve, reject) => {
+        let tokens: Array<TToken>;
+        let tree: TNode;
+        let executionResult: string;
+
+        try {
+          const lexer = new Lexer(expression);
+          tokens = lexer.tokenize();
+          console.log(tokens);
+        } catch (error) {
+          reject(error);
+          return;
+        }
+
+        try {
+          const parser = new Parser(tokens);
+          tree = parser.parse();
+        } catch (error) {
+          reject(error);
+          return;
+        }
+
+        try {
+          const executor = new Executor();
+          executionResult = executor.execute(tree);
+        } catch (error) {
+          reject(error);
+          return;
+        }
+
+        resolve(executionResult);
+      }),
+    [expression]
+  );
+
   useEffect(() => {
     if (expression) {
       try {
-        const evalResult = eval(expression);
-        const formattedResult = Number.isFinite(evalResult)
-          ? String(evalResult)
-          : 'Error';
-        setResult(formattedResult);
+        compute()
+          .then((r) => setResult(r))
+          .catch((e) => {
+            console.error(e);
+            setResult(e);
+          });
       } catch {
         setResult('Error');
       }
     } else {
       setResult('');
     }
-  }, [expression]);
+  }, [compute, expression]);
 
   const handleButtonClick = (button: TCalculatorButton) => {
     const input = inputRef.current;
@@ -62,13 +101,12 @@ const CalculatorApp = () => {
       newCursorPos = currentPos - 1;
     } else if (button.operation === E_OPERATION.EQUALS) {
       try {
-        const evalResult = eval(currentValue);
-        const formattedResult = Number.isFinite(evalResult)
-          ? String(evalResult)
-          : 'Error';
-        newExp = formattedResult;
-        newCursorPos = formattedResult.length;
-        setResult(formattedResult);
+        compute()
+          .then((r) => setResult(r))
+          .catch((e) => {
+            console.error(e);
+            setResult(e);
+          });
       } catch {
         const errorMsg = 'Error';
         newExp = errorMsg;
@@ -90,6 +128,8 @@ const CalculatorApp = () => {
 
     setExpression(newExp);
   };
+
+  // const profile = () => {};
 
   const handleKeyDown = (event: globalThis.KeyboardEvent) => {
     const mapping = KEY_MAPPINGS.find((m) => m.key === event.key);
@@ -193,6 +233,7 @@ const CalculatorApp = () => {
                 inputRef={inputRef}
                 onChange={(e) => setExpression(e.target.value)}
                 value={expression}
+                autoComplete={'off'}
               />
 
               <Button
