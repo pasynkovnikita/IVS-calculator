@@ -1,4 +1,4 @@
-import { E_OPERATOR, E_TOKEN_TYPE, TNode } from '../calculator/types';
+import { E_OPERATOR, E_TOKEN_TYPE, Lexer, Parser, TNode } from '../calculator';
 
 describe('Parser', () => {
   const cases: Record<string, Array<[string, TNode | string]>> = {
@@ -94,10 +94,10 @@ describe('Parser', () => {
       ['+', 'Unexpected token type: operator'],
       ['2 +', 'Unexpected token type: eof'],
       ['2 + * 3', 'Unexpected token type: operator'],
-      ['(2 + 3', 'Unclosed parenthesis'],
+      ['(2 + 3', 'Unexpected token type: eof'],
       ['2 + ', 'Unexpected token type: eof'],
       ['* 2', 'Unexpected token type: operator'],
-      ['2 2', 'Unexpected token type: number'],
+      ['2 2', 'Expected eof, got number'],
       ['2 + + 2', 'Unexpected token type: operator'],
     ],
   };
