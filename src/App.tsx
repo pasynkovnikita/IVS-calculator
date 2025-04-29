@@ -239,6 +239,30 @@ const CalculatorApp = () => {
                 <AccordionSummary expandIcon={<ExpandMore />}>
                   <Typography>Basic Functions</Typography>
                 </AccordionSummary>
+                <AccordionDetails>
+                  <b>Addition (+): Add two numbers.</b>
+                  <br />
+                  Example: 2 + 3 = 5
+                </AccordionDetails>
+                <AccordionDetails>
+                  <b>Subtraction (-): Subtract one number from another.</b>
+                  <br /> Example: 5 - 2 = 3
+                </AccordionDetails>
+
+                <AccordionDetails>
+                  <b>Multiplication (*): Multiply two numbers.</b>
+                  <br /> Example: 4 * 3 = 12
+                </AccordionDetails>
+
+                <AccordionDetails>
+                  <b>Division (/): Divide one number by another.</b>
+                  <br /> Example: 8 / 2 = 4
+                </AccordionDetails>
+
+                <AccordionDetails>
+                  Simply enter the first number, select the operator, enter the
+                  second number, and press =.
+                </AccordionDetails>
               </Accordion>
 
               <Accordion disableGutters>
