@@ -44,6 +44,7 @@
     "prettier-plugin-tailwindcss": "^0.6.11",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
+    "typedoc": "^0.28.3",
     "typescript": "^5.8.2"
   },
   "scripts": {
@@ -52,6 +53,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint src --ext .ts,.tsx --fix"
+    "lint": "eslint src --ext .ts,.tsx --fix",
+    "docs:generate": "typedoc"
   },
   "browserslist": {
     "production": [

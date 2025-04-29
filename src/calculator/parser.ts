@@ -6,26 +6,53 @@ import {
   TToken,
 } from './types';
 
+/**
+ * Parser class for mathematical expressions.
+ * Converts a sequence of tokens into an Abstract Syntax Tree (AST).
+ * Handles various mathematical operations including basic arithmetic,
+ * functions (sqrt, abs), and special operators (factorial, root).
+ */
 export class Parser {
+  /** Current position in the token stream */
   private position = 0;
 
+  /** Array of tokens to be parsed */
   private tokens: Array<TToken> = [];
 
+  /**
+   * Creates a new Parser instance.
+   * @param tokens - Array of tokens to be parsed
+   */
   constructor(tokens: Array<TToken>) {
     this.tokens = tokens;
     this.position = 0;
   }
 
+  /**
+   * Parses the token stream and builds an Abstract Syntax Tree (AST).
+   * @returns The root node of the AST representing the parsed expression
+   * @throws {Error} If the expression is invalid or incomplete
+   */
   public parse(): TNode {
     const expression = this.parseExpression();
     this.eat(E_TOKEN_TYPE.E_EOF);
     return expression;
   }
 
+  /**
+   * Returns the current token in the token stream without advancing the position.
+   * @returns The current token
+   */
   private getCurrentToken(): TToken {
     return this.tokens[this.position];
   }
 
+  /**
+   * Consumes the current token if it matches the expected type and advances the position.
+   * @param type - The expected token type
+   * @returns The consumed token
+   * @throws {Error} If the current token doesn't match the expected type
+   */
   private eat(type: E_TOKEN_TYPE): TToken {
     const token = this.getCurrentToken();
     if (token.type !== type) {
@@ -35,6 +62,11 @@ export class Parser {
     return token;
   }
 
+  /**
+   * Parses addition and subtraction expressions.
+   * Handles the lowest precedence operations (+ and -).
+   * @returns AST node representing the parsed expression
+   */
   private parseExpression(): TNode {
     let left = this.parseTerm();
 
@@ -58,6 +90,11 @@ export class Parser {
     return left;
   }
 
+  /**
+   * Parses power and root expressions.
+   * Handles higher precedence operations (^ and root).
+   * @returns AST node representing the parsed power/root expression
+   */
   private parsePower(): TNode {
     let left = this.parseFunction();
 
@@ -86,6 +123,11 @@ export class Parser {
     return left;
   }
 
+  /**
+   * Checks and processes postfix operators (currently only factorial).
+   * @param node - The AST node to potentially apply the postfix operator to
+   * @returns The node with postfix operator applied if present, or the original node
+   */
   private checkPostfixOperator(node: TNode): TNode {
     const token = this.getCurrentToken();
     if (
@@ -104,6 +146,11 @@ export class Parser {
     return node;
   }
 
+  /**
+   * Parses multiplication and division expressions.
+   * Handles medium precedence operations (* and /).
+   * @returns AST node representing the parsed term
+   */
   private parseTerm(): TNode {
     let left = this.parsePower();
 
@@ -129,6 +176,13 @@ export class Parser {
     return left;
   }
 
+  /**
+   * Determines if the current token represents a unary operator.
+   * Handles special cases for minus (which can be both unary and binary)
+   * and factorial (which is a postfix operator).
+   * @returns The unary operator type if current token is a unary operator, null otherwise
+   * @throws {Error} If factorial operator is used incorrectly
+   */
   private isUnaryOperator(): E_OPERATOR | null {
     const token = this.getCurrentToken();
     if (token.type !== E_TOKEN_TYPE.E_OPERATOR) {
@@ -184,6 +238,13 @@ export class Parser {
       : null;
   }
 
+  /**
+   * Parses function calls and special operations (sqrt, abs, root).
+   * Handles both single-argument functions (sqrt, abs) and 
+   * two-argument functions (root).
+   * @returns AST node representing the parsed function call
+   * @throws {Error} If function syntax is invalid (e.g., missing comma in root function)
+   */
   private parseFunction(): TNode {
     const token = this.getCurrentToken();
 
@@ -233,6 +294,13 @@ export class Parser {
     return this.parseFactor();
   }
 
+  /**
+   * Parses the basic elements of an expression: numbers, parenthesized expressions,
+   * and unary operations. This is the lowest level parsing method that handles
+   * individual tokens and basic expressions.
+   * @returns AST node representing the parsed factor
+   * @throws {Error} If unexpected token is encountered or parentheses are mismatched
+   */
   private parseFactor(): TNode {
     const token = this.getCurrentToken();
 
