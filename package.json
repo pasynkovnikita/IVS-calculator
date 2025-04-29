@@ -63,7 +63,8 @@
     "eject": "react-scripts eject",
     "lint": "eslint src --ext .ts,.tsx --fix",
     "clean": "rm -rf build dist",
-    "electron:package": "yarn build && electron-builder -m -c.extraMetadata.main=build/electron.js"
+    "electron:package": "yarn build && electron-builder -m -c.extraMetadata.main=build/electron.js",
+    "std:build": "bun build stddev.ts --compile --minify --outfile stddev"
   },
   "build": {
     "appId": "com.ivs.calculator",
