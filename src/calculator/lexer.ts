@@ -28,7 +28,7 @@ export class Lexer {
   private position = 0;
 
   /** List of supported word-based operators (functions) */
-  private static readonly WORD_OPERATORS = ['sqrt', 'root', 'abs'];
+  private static readonly WORD_OPERATORS = ['sqrt', 'root', 'abs', 'std'];
 
   /** Mapping of operator symbols/words to their corresponding enum values */
   private static readonly OPERATOR_MAPPING: Record<string, E_OPERATOR> = {
@@ -41,6 +41,7 @@ export class Lexer {
     sqrt: E_OPERATOR.E_SQRT,
     root: E_OPERATOR.E_ROOT,
     abs: E_OPERATOR.E_ABS,
+    std: E_OPERATOR.E_STD,
   };
 
   /** Mapping of special characters to their corresponding token types */

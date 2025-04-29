@@ -15,13 +15,31 @@ describe('Executor', () => {
       ['2 * (3 + 4)', '14'],
       ['(10 + 2) / (3 + 1)', '3'],
     ],
+    FunctionCalls: [
+      ['sqrt(16)', '4'],
+      ['abs(-5)', '5'],
+      ['root(8, 3)', '2'],
+      ['std(2, 2)', '0'],
+      ['sqrt(16 + 9)', '5'],
+      ['abs(2 - 5)', '3'],
+      ['root(27, 3)', '3'],
+      ['std(1, 2, 3)', '0.816496580927726'],
+      ['std(1, 1, 1, 1)', '0'],
+      ['std(10, 20, 30, 40)', '11.180339887498949'],
+    ],
     EdgeCases: [
       ['1000000 * 1000000', '1000000000000'],
       ['-5 * -3', '15'],
       ['2 + (-3)', '-1'],
       ['1 + 2 + 3 + 4 + 5', '15'],
+      ['std()', 'NaN'],
+      ['std(1)', '0'],
     ],
-    ErrorCases: [['10 / 0', 'Division by zero']],
+    ErrorCases: [
+      ['10 / 0', 'Division by zero'],
+      ['sqrt(-1)', 'Square root of negative number'],
+      ['root(8, 0)', 'Root degree cannot be zero'],
+    ],
   };
 
   const execute = (input: string): string => {

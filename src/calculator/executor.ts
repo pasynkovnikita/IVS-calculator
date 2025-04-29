@@ -5,6 +5,7 @@ import {
   isOperatorNode,
   isUnaryOperatorNode,
   isBinaryOperatorNode,
+  isFunctionNode,
 } from './types';
 
 /**
@@ -20,7 +21,7 @@ export class Executor {
    */
   private static readonly OPERATIONS_MAP: Record<
     E_OPERATOR,
-    ((a: number, b: number) => number) | ((a: number) => number)
+    (a: Array<number>) => number
   > = {
     /**
      * Addition operation
@@ -28,21 +29,21 @@ export class Executor {
      * @param {number} b - Second operand
      * @returns {number} Sum of the operands
      */
-    [E_OPERATOR.E_PLUS]: (a, b) => a + b,
+    [E_OPERATOR.E_PLUS]: ([a, b]) => a + b,
     /**
      * Subtraction operation
      * @param {number} a - First operand
      * @param {number} b - Second operand
      * @returns {number} Difference of the operands
      */
-    [E_OPERATOR.E_MINUS]: (a, b) => a - b,
+    [E_OPERATOR.E_MINUS]: ([a, b]) => a - b,
     /**
      * Multiplication operation
      * @param {number} a - First operand
      * @param {number} b - Second operand
      * @returns {number} Product of the operands
      */
-    [E_OPERATOR.E_MULTIPLY]: (a, b) => a * b,
+    [E_OPERATOR.E_MULTIPLY]: ([a, b]) => a * b,
     /**
      * Division operation
      * @param {number} a - Dividend
@@ -50,7 +51,7 @@ export class Executor {
      * @returns {number} Quotient of the division
      * @throws {Error} When attempting to divide by zero
      */
-    [E_OPERATOR.E_DIVIDE]: (a, b) => {
+    [E_OPERATOR.E_DIVIDE]: ([a, b]) => {
       if (b === 0) {
         throw new Error('Division by zero');
       }
@@ -62,13 +63,13 @@ export class Executor {
      * @param {number} b - Divisor
      * @returns {number} Remainder of the division
      */
-    [E_OPERATOR.E_MODULO]: (a, b) => a % b,
+    [E_OPERATOR.E_MODULO]: ([a, b]) => a % b,
     /**
      * Unary minus operation
      * @param {number} a - Number to negate
      * @returns {number} Negated value
      */
-    [E_OPERATOR.E_UNARY_MINUS]: (a: number) => -a,
+    [E_OPERATOR.E_UNARY_MINUS]: ([a]) => -a,
     /**
      * Nth root operation
      * @param {number} base - The number under the root
@@ -76,7 +77,7 @@ export class Executor {
      * @returns {number} The nth root of the base
      * @throws {Error} When degree is zero, negative, or when taking root of negative number with non-integer degree
      */
-    [E_OPERATOR.E_ROOT]: (base, n) => {
+    [E_OPERATOR.E_ROOT]: ([base, n]) => {
       if (n === 0) {
         throw new Error('Root degree cannot be zero');
       }
@@ -94,7 +95,7 @@ export class Executor {
      * @returns {number} The square root of the input
      * @throws {Error} When attempting to find square root of a negative number
      */
-    [E_OPERATOR.E_SQRT]: (a: number) => {
+    [E_OPERATOR.E_SQRT]: ([a]) => {
       if (a < 0) {
         throw new Error('Square root of negative number');
       }
@@ -106,7 +107,7 @@ export class Executor {
      * @returns {number} The factorial of the input
      * @throws {Error} When input is negative or non-integer
      */
-    [E_OPERATOR.E_FACTORIAL]: (a: number) => {
+    [E_OPERATOR.E_FACTORIAL]: ([a]) => {
       if (a < 0) {
         throw new Error('Factorial of negative number');
       }
@@ -125,19 +126,19 @@ export class Executor {
      * @param {number} b - Exponent
      * @returns {number} The base raised to the power of the exponent
      */
-    [E_OPERATOR.E_POWER]: (a: number, b: number) => Math.pow(a, b),
+    [E_OPERATOR.E_POWER]: ([a, b]) => Math.pow(a, b),
     /**
      * Absolute value operation
      * @param {number} a - Number to find absolute value of
      * @returns {number} The absolute value of the input
      */
-    [E_OPERATOR.E_ABS]: (a: number) => Math.abs(a),
+    [E_OPERATOR.E_ABS]: ([a]) => Math.abs(a),
     /**
      * Standard deviation operation (currently same as absolute value)
      * @param {number[]} numbers - Number to process
      * @returns {number} The absolute value of the input
      */
-    [E_OPERATOR.E_STD]: (...numbers: Array<number>) => {
+    [E_OPERATOR.E_STD]: (numbers: Array<number>) => {
       if (numbers.length === 0) return NaN;
 
       const mean =
@@ -174,13 +175,18 @@ export class Executor {
 
       if (isUnaryOperatorNode(node)) {
         const rightValue = parseFloat(this.execute(node.right));
-        return `${(operation as (a: number) => number)(rightValue)}`;
+        return `${operation([rightValue])}`;
       }
 
       if (isBinaryOperatorNode(node)) {
         const leftValue = parseFloat(this.execute(node.left));
         const rightValue = parseFloat(this.execute(node.right));
-        return `${(operation as (a: number, b: number) => number)(leftValue, rightValue)}`;
+        return `${operation([leftValue, rightValue])}`;
+      }
+
+      if (isFunctionNode(node)) {
+        const argValues = node.args.map((arg) => parseFloat(this.execute(arg)));
+        return `${operation(argValues)}`;
       }
     }
 
