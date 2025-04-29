@@ -19,6 +19,7 @@ export enum E_OPERATOR {
   E_FACTORIAL = '!',
   E_POWER = '^',
   E_ABS = 'abs',
+  E_STD = 'std',
 }
 
 export type TToken =
@@ -43,10 +44,17 @@ export type TOperatorNode = {
   | {
       left: TNode;
       right: TNode;
+      args?: undefined;
     }
   | {
       left: undefined;
       right: TNode;
+      args?: undefined;
+    }
+  | {
+      left?: undefined;
+      right?: undefined;
+      args: Array<TNode>;
     }
 );
 
@@ -60,12 +68,17 @@ export type TNode = TDefaultNode | TOperatorNode;
 export const isOperatorNode = (node: TNode): node is TOperatorNode =>
   node.type === E_TOKEN_TYPE.E_OPERATOR;
 
+export const isFunctionNode = (
+  node: TNode
+): node is Extract<TOperatorNode, { args: Array<TNode> }> =>
+  isOperatorNode(node) && !!node.args;
+
 export const isUnaryOperatorNode = (
   node: TNode
-): node is Extract<TOperatorNode, { left: undefined }> =>
-  isOperatorNode(node) && !node.left;
+): node is Extract<TOperatorNode, { left: undefined; right: TNode }> =>
+  isOperatorNode(node) && !node.left && !node.args && !!node.right;
 
 export const isBinaryOperatorNode = (
   node: TNode
-): node is Extract<TOperatorNode, { left: TNode }> =>
-  isOperatorNode(node) && !!node.left;
+): node is Extract<TOperatorNode, { left: TNode; right: TNode }> =>
+  isOperatorNode(node) && !!node.left && !!node.right && !node.args;

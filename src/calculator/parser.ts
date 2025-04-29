@@ -67,11 +67,16 @@ export class Parser {
     while (
       isOperatorToken(this.getCurrentToken()) &&
       (this.getCurrentToken().value === '^' ||
-        this.getCurrentToken().value === 'root')
+        this.getCurrentToken().value === 'root' ||
+        this.getCurrentToken().value === 'std')
     ) {
       const operatorToken = this.eat(E_TOKEN_TYPE.E_OPERATOR);
       const operator =
-        operatorToken.value === '^' ? E_OPERATOR.E_POWER : E_OPERATOR.E_ROOT;
+        operatorToken.value === '^'
+          ? E_OPERATOR.E_POWER
+          : operatorToken.value === 'std'
+            ? E_OPERATOR.E_STD
+            : E_OPERATOR.E_ROOT;
       const right = this.parseFunction();
       // Apply factorial operators to the right operand
       const rightWithFactorial = this.checkPostfixOperator(right);
@@ -184,6 +189,29 @@ export class Parser {
       : null;
   }
 
+  private parseFunctionArgs(): Array<TNode> {
+    const args: Array<TNode> = [];
+    this.eat(E_TOKEN_TYPE.E_LEFT_PARENTHESIS);
+
+    // Handle empty argument list
+    if (this.getCurrentToken().type === E_TOKEN_TYPE.E_RIGHT_PARENTHESIS) {
+      this.eat(E_TOKEN_TYPE.E_RIGHT_PARENTHESIS);
+      return args;
+    }
+
+    // Parse first argument
+    args.push(this.parseExpression());
+
+    // Parse remaining arguments
+    while (this.getCurrentToken().type === E_TOKEN_TYPE.E_COMMA) {
+      this.eat(E_TOKEN_TYPE.E_COMMA);
+      args.push(this.parseExpression());
+    }
+
+    this.eat(E_TOKEN_TYPE.E_RIGHT_PARENTHESIS);
+    return args;
+  }
+
   private parseFunction(): TNode {
     const token = this.getCurrentToken();
 
@@ -191,42 +219,27 @@ export class Parser {
       return this.parseFactor();
     }
 
-    // Handle root function with two arguments
-    if (token.value === E_OPERATOR.E_ROOT) {
-      this.eat(E_TOKEN_TYPE.E_OPERATOR);
-      this.eat(E_TOKEN_TYPE.E_LEFT_PARENTHESIS);
-      const left = this.parseExpression();
-
-      const commaToken = this.getCurrentToken();
-      if (commaToken.type !== E_TOKEN_TYPE.E_COMMA) {
-        throw new Error('Expected comma in root function');
-      }
-      this.eat(E_TOKEN_TYPE.E_COMMA);
-
-      const right = this.parseExpression();
-      this.eat(E_TOKEN_TYPE.E_RIGHT_PARENTHESIS);
-
-      return {
-        type: E_TOKEN_TYPE.E_OPERATOR,
-        value: E_OPERATOR.E_ROOT,
-        left,
-        right,
-      };
-    }
-
-    // Handle other functions (sqrt, abs)
-    if (token.value === 'sqrt' || token.value === 'abs') {
+    // Handle functions with arguments
+    if (
+      token.value === E_OPERATOR.E_ROOT ||
+      token.value === E_OPERATOR.E_STD ||
+      token.value === 'sqrt' ||
+      token.value === 'abs'
+    ) {
       const operator =
-        token.value === 'sqrt' ? E_OPERATOR.E_SQRT : E_OPERATOR.E_ABS;
+        token.value === 'sqrt'
+          ? E_OPERATOR.E_SQRT
+          : token.value === 'abs'
+            ? E_OPERATOR.E_ABS
+            : token.value;
+
       this.eat(E_TOKEN_TYPE.E_OPERATOR);
-      this.eat(E_TOKEN_TYPE.E_LEFT_PARENTHESIS);
-      const right = this.parseExpression();
-      this.eat(E_TOKEN_TYPE.E_RIGHT_PARENTHESIS);
+      const args = this.parseFunctionArgs();
 
       return {
         type: E_TOKEN_TYPE.E_OPERATOR,
         value: operator,
-        right,
+        args: args,
       };
     }
 

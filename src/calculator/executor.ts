@@ -5,25 +5,26 @@ import {
   isOperatorNode,
   isUnaryOperatorNode,
   isBinaryOperatorNode,
+  isFunctionNode,
 } from './types';
 
 export class Executor {
   private static readonly OPERATIONS_MAP: Record<
     E_OPERATOR,
-    ((a: number, b: number) => number) | ((a: number) => number)
+    (a: Array<number>) => number
   > = {
-    [E_OPERATOR.E_PLUS]: (a, b) => a + b,
-    [E_OPERATOR.E_MINUS]: (a, b) => a - b,
-    [E_OPERATOR.E_MULTIPLY]: (a, b) => a * b,
-    [E_OPERATOR.E_DIVIDE]: (a, b) => {
+    [E_OPERATOR.E_PLUS]: ([a, b]) => a + b,
+    [E_OPERATOR.E_MINUS]: ([a, b]) => a - b,
+    [E_OPERATOR.E_MULTIPLY]: ([a, b]) => a * b,
+    [E_OPERATOR.E_DIVIDE]: ([a, b]) => {
       if (b === 0) {
         throw new Error('Division by zero');
       }
       return a / b;
     },
-    [E_OPERATOR.E_MODULO]: (a, b) => a % b,
-    [E_OPERATOR.E_UNARY_MINUS]: (a: number) => -a,
-    [E_OPERATOR.E_ROOT]: (base, n) => {
+    [E_OPERATOR.E_MODULO]: ([a, b]) => a % b,
+    [E_OPERATOR.E_UNARY_MINUS]: ([a]) => -a,
+    [E_OPERATOR.E_ROOT]: ([base, n]) => {
       if (n === 0) {
         throw new Error('Root degree cannot be zero');
       }
@@ -35,13 +36,13 @@ export class Executor {
       }
       return Math.pow(base, 1 / n);
     },
-    [E_OPERATOR.E_SQRT]: (a: number) => {
+    [E_OPERATOR.E_SQRT]: ([a]) => {
       if (a < 0) {
         throw new Error('Square root of negative number');
       }
       return Math.sqrt(a);
     },
-    [E_OPERATOR.E_FACTORIAL]: (a: number) => {
+    [E_OPERATOR.E_FACTORIAL]: ([a]) => {
       if (a < 0) {
         throw new Error('Factorial of negative number');
       }
@@ -54,8 +55,24 @@ export class Executor {
       }
       return result;
     },
-    [E_OPERATOR.E_POWER]: (a, b) => Math.pow(a, b),
-    [E_OPERATOR.E_ABS]: (a: number) => Math.abs(a),
+    [E_OPERATOR.E_POWER]: ([a, b]) => Math.pow(a, b),
+    [E_OPERATOR.E_ABS]: ([a]) => Math.abs(a),
+    [E_OPERATOR.E_STD]: (numbers) => {
+      if (numbers.length === 0) return NaN;
+
+      const mean =
+        numbers.reduce((sum, value) => sum + value, 0) / numbers.length;
+
+      const squaredDiffs = numbers.map((value) => {
+        const diff = value - mean;
+        return diff * diff;
+      });
+
+      const variance =
+        squaredDiffs.reduce((sum, value) => sum + value, 0) / numbers.length;
+
+      return Math.sqrt(variance);
+    },
   };
 
   public execute(node: TNode): string {
@@ -71,13 +88,18 @@ export class Executor {
 
       if (isUnaryOperatorNode(node)) {
         const rightValue = parseFloat(this.execute(node.right));
-        return `${(operation as (a: number) => number)(rightValue)}`;
+        return `${operation([rightValue])}`;
       }
 
       if (isBinaryOperatorNode(node)) {
         const leftValue = parseFloat(this.execute(node.left));
         const rightValue = parseFloat(this.execute(node.right));
-        return `${(operation as (a: number, b: number) => number)(leftValue, rightValue)}`;
+        return `${operation([leftValue, rightValue])}`;
+      }
+
+      if (isFunctionNode(node)) {
+        const argValues = node.args.map((arg) => parseFloat(this.execute(arg)));
+        return `${operation(argValues)}`;
       }
     }
 

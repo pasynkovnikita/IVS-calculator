@@ -9,7 +9,7 @@ export class Lexer {
 
   private position = 0;
 
-  private static readonly WORD_OPERATORS = ['sqrt', 'root', 'abs'];
+  private static readonly WORD_OPERATORS = ['sqrt', 'root', 'abs', 'std'];
 
   private static readonly OPERATOR_MAPPING: Record<string, E_OPERATOR> = {
     '+': E_OPERATOR.E_PLUS,
@@ -21,6 +21,7 @@ export class Lexer {
     sqrt: E_OPERATOR.E_SQRT,
     root: E_OPERATOR.E_ROOT,
     abs: E_OPERATOR.E_ABS,
+    std: E_OPERATOR.E_STD,
   };
 
   private static readonly TOKEN_MAPPING: Record<string, E_TOKEN_TYPE> = {
