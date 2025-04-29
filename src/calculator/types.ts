@@ -19,6 +19,7 @@ export enum E_OPERATOR {
   E_FACTORIAL = '!',
   E_POWER = '^',
   E_ABS = 'abs',
+  E_STD = 'std',
 }
 
 export type TToken =
