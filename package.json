@@ -15,8 +15,7 @@
     "@types/jest": "^29.5.14",
     "@types/react-dom": "^19.0.0",
     "autoprefixer": "^10.4.14",
-    "electron": "^35.2.1",
-    "electron-builder": "^26.0.12",
+    "bun": "^1.2.11",
     "electron-is-dev": "^3.0.1",
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-react": "^7.33.2",
@@ -63,7 +62,7 @@
     "eject": "react-scripts eject",
     "lint": "eslint src --ext .ts,.tsx --fix",
     "clean": "rm -rf build dist",
-    "electron:package": "yarn build && electron-builder -m -c.extraMetadata.main=build/electron.js",
+    "profile": "bun src/profiling/generate-stdin.ts && bun --inspect-wait src/profiling/profiling.ts",
     "std:build": "bun build stddev.ts --compile --minify --outfile stddev"
   },
   "build": {
