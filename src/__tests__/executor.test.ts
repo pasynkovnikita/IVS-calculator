@@ -18,11 +18,11 @@ describe('Executor', () => {
     FunctionCalls: [
       ['sqrt(16)', '4'],
       ['abs(-5)', '5'],
-      ['root(8, 3)', '2'],
+      ['root(3, 8)', '2'],
       ['std(2, 2)', '0'],
       ['sqrt(16 + 9)', '5'],
       ['abs(2 - 5)', '3'],
-      ['root(27, 3)', '3'],
+      ['root(3, 27)', '3'],
       ['std(1, 2, 3)', '0.816496580927726'],
       ['std(1, 1, 1, 1)', '0'],
       ['std(10, 20, 30, 40)', '11.180339887498949'],
@@ -38,7 +38,7 @@ describe('Executor', () => {
     ErrorCases: [
       ['10 / 0', 'Division by zero'],
       ['sqrt(-1)', 'Square root of negative number'],
-      ['root(8, 0)', 'Root degree cannot be zero'],
+      ['root(0, 8)', 'Root degree cannot be zero'],
     ],
   };
 
