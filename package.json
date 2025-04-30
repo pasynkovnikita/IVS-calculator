@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
+  "author": "Nikita Pasynkov <xpasyn00@stud.fit.vut.cz>",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
@@ -15,9 +16,6 @@
     "@types/jest": "^29.5.14",
     "@types/react-dom": "^19.0.0",
     "autoprefixer": "^10.4.14",
-    "electron": "^35.2.1",
-    "electron-builder": "^26.0.12",
-    "electron-is-dev": "^3.0.1",
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
@@ -63,7 +61,9 @@
     "eject": "react-scripts eject",
     "lint": "eslint src --ext .ts,.tsx --fix",
     "clean": "rm -rf build dist",
-    "electron:package": "yarn build && electron-builder -m -c.extraMetadata.main=build/electron.js",
+    "electron:package:mac": "yarn build && electron-builder -m -c.extraMetadata.main=build/electron.js",
+    "electron:package:win": "yarn build && electron-builder -w --x64 -c.extraMetadata.main=build/electron.js",
+    "electron:package:lin": "yarn build && electron-builder -l --x64 -c.extraMetadata.main=build/electron.js",
     "std:build": "bun build stddev.ts --compile --minify --outfile stddev"
   },
   "build": {
@@ -88,7 +88,12 @@
       "target": "nsis"
     },
     "linux": {
-      "target": "AppImage"
+      "target": [
+        "deb",
+        "AppImage"
+      ],
+      "maintainer": "Nikita Pasynkov <xpasyn00@stud.fit.vut.cz>",
+      "category": "Utility"
     }
   },
   "browserslist": {

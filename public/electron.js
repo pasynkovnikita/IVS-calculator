@@ -1,4 +1,3 @@
-const electron = require('electron');
 const { app, BrowserWindow, protocol } = require('electron');
 const path = require('path');
 const url = require('url');
@@ -10,9 +9,6 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
-    webPreferences: {
-      preload: path.join(`${path.join(__dirname, 'preload.js')}`),
-    },
     autoHideMenuBar: true,
   });
 
@@ -28,19 +24,6 @@ function createWindow() {
   if (!app.isPackaged) {
     mainWindow.webContents.openDevTools();
   }
-
-  // if (isDev) {
-  //   mainWindow.loadURL('http://localhost:3000');
-  // } else {
-  //   const indexPath = `file://${path.join(__dirname, '../build/index.html')}`;
-  //   // Set the base directory for loading resources
-  //   mainWindow.loadFile(indexPath);
-  //   // Ensure protocol is properly handled
-  //   mainWindow.webContents.on('did-finish-load', () => {
-  //     // Optional: Verify that the page loaded correctly
-  //     console.log('Application loaded successfully');
-  //   });
-  // }
 
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -76,27 +59,10 @@ app.whenReady().then(() => {
   });
 });
 
-//
-// app.whenReady().then(createWindow);
-
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
-});
-
-// If your app has no need to navigate or only needs to navigate to known pages,
-// it is a good idea to limit navigation outright to that known scope,
-// disallowing any other kinds of navigation.
-const allowedNavigationDestinations = 'https://my-electron-app.com';
-app.on('web-contents-created', (event, contents) => {
-  contents.on('will-navigate', (event, navigationUrl) => {
-    const parsedUrl = new URL(navigationUrl);
-
-    if (!allowedNavigationDestinations.includes(parsedUrl.origin)) {
-      event.preventDefault();
-    }
-  });
 });
 
 app.on('activate', () => {
