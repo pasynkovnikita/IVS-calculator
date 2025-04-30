@@ -84,6 +84,12 @@ install-deps:
 	  nvm install node; \
 	)
 
+	@command -v corepack >/dev/null 2>&1 || \
+    	( \
+    	  echo "Installing Corepack..."; \
+    	  npm install -g corepack; \
+    	)
+
 	@command -v yarn >/dev/null 2>&1 || \
 	( \
 	  echo "Installing Yarn..."; \
