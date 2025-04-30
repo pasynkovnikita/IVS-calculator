@@ -1,0 +1,14 @@
+Team Name: Team Žučka
+
+- Nikita Pasynkov (xpasyn00)
+- Elena Marochkina (xmaroc00)
+- Adrián Perniš (xperni23)
+
+All planned tasks were completed by the team, including UI development, core and advanced math functions, documentation, testing, and creating the installer.
+
+There were no major changes to the original plan, but due to everyone’s busy schedules, most of the work was done during the final sprint. Because of that, there was less time than expected for detailed testing and polishing.
+
+GitHub was used for source code management, code reviews, and CI/CD workflows. The overall experience was positive, and the platform proved to be user-friendly and efficient.
+Code review was not performed as thoroughly as planned, since much of the code was written or finalized close to the deadline.
+
+YouTrack was used for task tracking and sprint planning. Although the team wasn’t fully consistent with using it throughout the project, it was still helpful in keeping everyone aware of their responsibilities and what needed to be done.
