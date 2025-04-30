@@ -12,6 +12,9 @@ YARN_STDDEV_OUTPUT=../$(STDDEV_CLI_APP)
 BUILT_FOLDERS=../dist ../out ../docs ../build ../node_modules temp
 BUILT_FILES=../stddev $(TEAM_FILENAME).zip
 
+REPO=pasynkovnikita/IVS-calculator
+INSTALLER=ivs-calculator_0.1.0_amd64.deb
+
 # Task targets
 all: install-deps stddev
 
@@ -20,11 +23,12 @@ pack: clean install-deps doc stddev
 	mkdir -p temp
 	mkdir -p temp/doc temp/install temp/repo
 
-	cp -r ../prebuilt/* temp/install
+	# Download installer from the release
+	curl -L --output temp/install/$(INSTALLER) https://github.com/$(REPO)/releases/download/v0.1.0/$(INSTALLER)
 	cp ../stddev temp/install
 	cp -r ../docs temp/doc
-	cd ../ && rm -rf $(BUILT_FOLDERS)
-	rsync -a --exclude 'temp' --exclude 'prebuilt' --exclude 'docs' --exclude '*.zip' --exclude 'node_modules' --exclude 'dist' --exclude 'out' --exclude 'build' --exclude '.idea' ../ temp/repo/
+	cd ../ && rm -rf $(BUILT_FOLDERS) &(BUILT_FILES)
+	rsync -a --exclude 'temp' --exclude 'prebuilt' --exclude 'docs' --exclude '*.zip' --exclude 'node_modules' --exclude 'dist' --exclude 'out' --exclude 'build' --exclude '.idea' --exclude "stddev" ../ temp/repo/
 
 	cd temp && zip -r $(TEAM_FILENAME).zip doc/ install/ repo/
 	mv temp/$(TEAM_FILENAME).zip ./
