@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
+  "author": "Nikita Pasynkov <xpasyn00@stud.fit.vut.cz>",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
@@ -66,7 +67,9 @@
     "clean": "rm -rf build dist",
     "electron:dev": "electron public/electron.js",
     "electron:start": "concurrently \"BROWSER=none react-scripts start\" \"wait-on http://localhost:3000 && yarn electron:dev\"",
-    "electron:package": "yarn build && electron-builder -m -c.extraMetadata.main=build/electron.js",
+    "electron:package:mac": "yarn build && electron-builder -m -c.extraMetadata.main=build/electron.js",
+    "electron:package:win": "yarn build && electron-builder -w --x64 -c.extraMetadata.main=build/electron.js",
+    "electron:package:lin": "yarn build && electron-builder -l --x64 -c.extraMetadata.main=build/electron.js",
     "std:build": "bun build stddev.ts --compile --minify --outfile stddev",
     "doc": "typedoc",
     "profile": "bun src/profiling/generate-stdin.ts && bun --inspect-brk src/profiling/profiling.ts"
@@ -93,7 +96,9 @@
       "target": "nsis"
     },
     "linux": {
-      "target": "AppImage"
+      "target": "deb",
+      "maintainer": "Nikita Pasynkov <xpasyn00@stud.fit.vut.cz>",
+      "category": "Utility"
     }
   },
   "browserslist": {
