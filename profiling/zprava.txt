@@ -1,0 +1,23 @@
+Profiling Report – `profiling.ts`
+
+Tested inputs: 10, 10³, 10⁶ numbers
+
+Summary
+
+| Input Size | Total Time | Bottlenecks                      |
+|------------|------------|----------------------------------|
+| 10         | ~6 ms      | None                             |
+| 10³        | ~10 ms     | `tokenize()`, `parse()`          |
+| 10⁶        | ~622 ms    | `std()`, `map()`, `parseFloat()` |
+
+Notes
+
+- Execution time grows with input size.
+- Largest cost: `Executor.execute()` with `parseFloat()` inside `map()`.
+- `parse()` becomes slower due to recursion on long expressions.
+
+Optimization Tips
+
+- Replace `map(parseFloat)` with a more efficient loop.
+- Avoid deep recursion in parser (consider iterative approach).
+- Pre-process input numbers more efficiently.
