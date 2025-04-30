@@ -29,6 +29,7 @@ const processedInput = input
 
 const expression = `std(${processedInput})`;
 
+// Set timeout so there is time for debugger to attach
 setTimeout(() => {
   console.log(`--- ${FILE} ---`);
   console.log(calc(expression));
