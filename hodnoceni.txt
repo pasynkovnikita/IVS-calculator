@@ -1,0 +1,3 @@
+xpasyn00 120 (calculator lib, electron builds, stddev)
+xmaroc00 110 (documentation, ui, mockup)
+xperni23 70 (tests, profiling, makefile)
