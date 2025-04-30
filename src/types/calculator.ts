@@ -139,7 +139,7 @@ export const CALCULATOR_BUTTONS: Array<TCalculatorButton> = [
     display: 'Space',
   },
   {
-    value: E_OPERATION.ENTER,
+    value: E_OPERATION.EQUALS,
     type: E_BUTTON_TYPE.CONTROL,
     operation: E_OPERATION.EQUALS,
     display: 'Enter',

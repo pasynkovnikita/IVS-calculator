@@ -1,14 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import {
-  Button,
-  TextField,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Typography,
-  Stack,
-} from '@mui/material';
-import { ExpandMore } from '@mui/icons-material';
+import { Button, TextField, Typography, Stack } from '@mui/material';
 import {
   E_OPERATION,
   TCalculatorButton,
@@ -17,6 +8,7 @@ import {
   CALCULATOR_LAYOUT,
 } from './types/calculator';
 import { Executor, Lexer, Parser, TNode, TToken } from './calculator';
+import HelpSection from './Help';
 
 const CalculatorApp = () => {
   const [expression, setExpression] = useState('');
@@ -33,7 +25,6 @@ const CalculatorApp = () => {
         try {
           const lexer = new Lexer(expression);
           tokens = lexer.tokenize();
-          console.log(tokens);
         } catch (error) {
           reject(error);
           return;
@@ -129,8 +120,6 @@ const CalculatorApp = () => {
     setExpression(newExp);
   };
 
-  // const profile = () => {};
-
   const handleKeyDown = (event: globalThis.KeyboardEvent) => {
     const mapping = KEY_MAPPINGS.find((m) => m.key === event.key);
     if (mapping) {
@@ -207,6 +196,7 @@ const CalculatorApp = () => {
           onClick={() => handleButtonClick(btn)}
           sx={{
             fontSize: '32px',
+            textTransform: 'inherit',
           }}
         >
           {btn.display}
@@ -268,77 +258,7 @@ const CalculatorApp = () => {
             </div>
           </Stack>
         </div>
-
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <Stack spacing={2}>
-            <Typography variant="h4" className="text-purple-800 mb-4">
-              Help
-            </Typography>
-
-            <Stack spacing={0}>
-              <Accordion disableGutters>
-                <AccordionSummary expandIcon={<ExpandMore />}>
-                  <Typography>Basic Functions</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <b>Addition (+): Add two numbers.</b>
-                  <br />
-                  Example: 2 + 3 = 5
-                </AccordionDetails>
-                <AccordionDetails>
-                  <b>Subtraction (-): Subtract one number from another.</b>
-                  <br /> Example: 5 - 2 = 3
-                </AccordionDetails>
-
-                <AccordionDetails>
-                  <b>Multiplication (*): Multiply two numbers.</b>
-                  <br /> Example: 4 * 3 = 12
-                </AccordionDetails>
-
-                <AccordionDetails>
-                  <b>Division (/): Divide one number by another.</b>
-                  <br /> Example: 8 / 2 = 4
-                </AccordionDetails>
-
-                <AccordionDetails>
-                  Simply enter the first number, select the operator, enter the
-                  second number, and press =.
-                </AccordionDetails>
-              </Accordion>
-
-              <Accordion disableGutters>
-                <AccordionSummary expandIcon={<ExpandMore />}>
-                  <Typography>Additional Functions</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Accordion disableGutters>
-                    <AccordionSummary expandIcon={<ExpandMore />}>
-                      <Typography>Square Root (√)</Typography>
-                    </AccordionSummary>
-                  </Accordion>
-
-                  <Accordion disableGutters>
-                    <AccordionSummary expandIcon={<ExpandMore />}>
-                      <Typography>Power Function (^)</Typography>
-                    </AccordionSummary>
-                  </Accordion>
-
-                  <Accordion disableGutters>
-                    <AccordionSummary expandIcon={<ExpandMore />}>
-                      <Typography>Factorial Function (!)</Typography>
-                    </AccordionSummary>
-                  </Accordion>
-
-                  <Accordion disableGutters>
-                    <AccordionSummary expandIcon={<ExpandMore />}>
-                      <Typography>Standard Deviation Function (σ)</Typography>
-                    </AccordionSummary>
-                  </Accordion>
-                </AccordionDetails>
-              </Accordion>
-            </Stack>
-          </Stack>
-        </div>
+        <HelpSection />
       </div>
     </div>
   );
