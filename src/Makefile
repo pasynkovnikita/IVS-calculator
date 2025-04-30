@@ -10,7 +10,7 @@ YARN_STDDEV_OUTPUT=../$(STDDEV_CLI_APP)
 
 # Clean files and folders
 BUILT_FOLDERS=../dist ../out ../docs ../build ../node_modules temp
-BUILT_FILES=../stddev $(TEAM_FILENAME).zip
+BUILT_FILES=stddev src/$(TEAM_FILENAME).zip
 
 REPO=pasynkovnikita/IVS-calculator
 INSTALLER=ivs-calculator_0.1.0_amd64.deb
@@ -20,22 +20,24 @@ all: install-deps stddev
 
 pack: clean install-deps doc stddev
 	# Create temp folder for the archive
-	mkdir -p temp
-	mkdir -p temp/doc temp/install temp/repo
+	@mkdir -p temp
+	@mkdir -p temp/doc temp/install temp/repo
 
 	# Download installer from the release
-	curl -L --output temp/install/$(INSTALLER) https://github.com/$(REPO)/releases/download/v0.1.0/$(INSTALLER)
-	cp ../stddev temp/install
-	cp -r ../docs temp/doc
-	cd ../ && rm -rf $(BUILT_FOLDERS) &(BUILT_FILES)
-	rsync -a --exclude 'temp' --exclude 'prebuilt' --exclude 'docs' --exclude '*.zip' --exclude 'node_modules' --exclude 'dist' --exclude 'out' --exclude 'build' --exclude '.idea' --exclude "stddev" ../ temp/repo/
+	@curl -L --output temp/install/$(INSTALLER) https://github.com/$(REPO)/releases/download/v0.1.0/$(INSTALLER)
+	@cp ../stddev temp/install
+	@cp -r ../docs temp/doc
+	@cd ../ && rm -rf $(BUILT_FOLDERS) stddev
+	@rsync -a --exclude 'temp' --exclude 'prebuilt' --exclude 'docs' --exclude '*.zip' --exclude 'node_modules' --exclude 'dist' --exclude 'out' --exclude 'build' --exclude '.idea' --exclude "stddev" ../ temp/repo/
 
-	cd temp && zip -r $(TEAM_FILENAME).zip doc/ install/ repo/
-	mv temp/$(TEAM_FILENAME).zip ./
-	rm -rf temp
+	@cd temp && zip -r $(TEAM_FILENAME).zip doc/ install/ repo/
+	@mv temp/$(TEAM_FILENAME).zip ./
+	@rm -rf temp
 
 build:
+	@echo "Building application"
 	@cd .. && yarn build
+	@echo "Application built"
 
 clean:
 	@echo "Cleaning application files and folders"
@@ -43,10 +45,12 @@ clean:
 	@echo "Application files and folders cleaned"
 
 test:
-	cd .. & yarn test
+	@cd .. & yarn test
 
 doc:
-	cd .. && yarn doc 1> /dev/null
+	@echo "Generating documentation"
+	@cd .. && yarn doc 1> /dev/null
+	@echo "Documentation generated"
 
 run:
 	@echo "Running application"
@@ -54,11 +58,13 @@ run:
 	@echo "Application closed"
 
 stddev:
+	@echo "Building an stddev executable."
 	yarn std:build
+	@echo "Built an stddev executable. Pass an input file with numbers: stddev < input.txt"
 
 profile:
 	@echo "Profiling: there is a 5 second delay before the script starts for debugger to launch"
-	@cd .. && yarn profile
+	cd .. && yarn profile
 	@echo "Finished profiling"
 
 install-deps:
