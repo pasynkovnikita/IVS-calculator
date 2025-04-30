@@ -207,6 +207,7 @@ const CalculatorApp = () => {
           onClick={() => handleButtonClick(btn)}
           sx={{
             fontSize: '32px',
+            textTransform: 'inherit',
           }}
         >
           {btn.display}
@@ -315,24 +316,61 @@ const CalculatorApp = () => {
                     <AccordionSummary expandIcon={<ExpandMore />}>
                       <Typography>Square Root (√)</Typography>
                     </AccordionSummary>
+                    <AccordionDetails>
+                      <ul className="list-disc pl-4">
+                        <li>Click the √ button to switch to root mode.</li>
+                        <li>
+                          Enter the degree of the root (e.g., 2 for square
+                          root).
+                        </li>
+                        <li>Enter the number you want to find the root of.</li>
+                      </ul>
+                      <br /> <strong>Example:</strong> √(2, 4) = 2
+                    </AccordionDetails>
                   </Accordion>
 
                   <Accordion disableGutters>
                     <AccordionSummary expandIcon={<ExpandMore />}>
                       <Typography>Power Function (^)</Typography>
                     </AccordionSummary>
+                    <AccordionDetails>
+                      <ul className="list-disc">
+                        <li> Enter the base number. </li>
+                        <li> Enter the exponent. </li>
+                        <li> Click the ^ button. </li>
+                      </ul>
+                      <br /> <strong>Example:</strong> 3 ^ 4 = 81
+                    </AccordionDetails>
                   </Accordion>
 
                   <Accordion disableGutters>
                     <AccordionSummary expandIcon={<ExpandMore />}>
                       <Typography>Factorial Function (!)</Typography>
                     </AccordionSummary>
+                    <AccordionDetails>
+                      <ul className="list-disc">
+                        <li> Enter a non-negative integer.</li>
+                        <li> Click the ! button.</li>
+                      </ul>
+                      <br /> <strong>Example:</strong> 5! = 120
+                    </AccordionDetails>
                   </Accordion>
 
                   <Accordion disableGutters>
                     <AccordionSummary expandIcon={<ExpandMore />}>
                       <Typography>Standard Deviation Function (σ)</Typography>
                     </AccordionSummary>
+                    <AccordionDetails>
+                      <ul className="list-disc">
+                        <li> Click the σ button.</li>
+                        <li>
+                          {' '}
+                          Enter a series of numbers separated by commas (,){' '}
+                        </li>
+                      </ul>
+                      <br /> <strong>Example:</strong> σ(2, 4, 4, 4, 5, 5, 7, 9)
+                      = 2
+                    </AccordionDetails>
                   </Accordion>
                 </AccordionDetails>
               </Accordion>
