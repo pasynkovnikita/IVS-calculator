@@ -35,13 +35,17 @@ export class Lexer {
     '+': E_OPERATOR.E_PLUS,
     '-': E_OPERATOR.E_MINUS,
     '*': E_OPERATOR.E_MULTIPLY,
+    '×': E_OPERATOR.E_MULTIPLY,
     '/': E_OPERATOR.E_DIVIDE,
+    '÷': E_OPERATOR.E_DIVIDE,
     '^': E_OPERATOR.E_POWER,
     '!': E_OPERATOR.E_FACTORIAL,
     sqrt: E_OPERATOR.E_SQRT,
     root: E_OPERATOR.E_ROOT,
+    '√': E_OPERATOR.E_ROOT,
     abs: E_OPERATOR.E_ABS,
     std: E_OPERATOR.E_STD,
+    σ: E_OPERATOR.E_STD,
   };
 
   /** Mapping of special characters to their corresponding token types */

@@ -11,7 +11,7 @@ export enum E_OPERATION {
   DIVIDE = '÷',
   MULTIPLY = '×',
 
-  SQUARE_ROOT = '√',
+  ROOT = '√',
   POWER = '^',
   FACTORIAL = '!',
   STANDARD_DEVIATION = 'σ',
@@ -72,9 +72,9 @@ export const CALCULATOR_BUTTONS: Array<TCalculatorButton> = [
   },
 
   {
-    value: E_OPERATION.SQUARE_ROOT,
+    value: E_OPERATION.ROOT,
     type: E_BUTTON_TYPE.SCIENTIFIC,
-    operation: E_OPERATION.SQUARE_ROOT,
+    operation: E_OPERATION.ROOT,
     display: '√',
   },
   {
@@ -177,7 +177,7 @@ export const CALCULATOR_LAYOUT: TCalculatorLayout = {
     E_OPERATION.ADD,
   ],
   scientific: [
-    E_OPERATION.SQUARE_ROOT,
+    E_OPERATION.ROOT,
     E_OPERATION.POWER,
     E_OPERATION.FACTORIAL,
     E_OPERATION.STANDARD_DEVIATION,

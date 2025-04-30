@@ -77,7 +77,7 @@ export class Executor {
      * @returns {number} The nth root of the base
      * @throws {Error} When degree is zero, negative, or when taking root of negative number with non-integer degree
      */
-    [E_OPERATOR.E_ROOT]: ([base, n]) => {
+    [E_OPERATOR.E_ROOT]: ([n, base]) => {
       if (n === 0) {
         throw new Error('Root degree cannot be zero');
       }
