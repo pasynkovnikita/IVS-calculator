@@ -21,10 +21,6 @@ function createWindow() {
     : 'http://localhost:3000';
   mainWindow.loadURL(appURL);
 
-  if (!app.isPackaged) {
-    mainWindow.webContents.openDevTools();
-  }
-
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
