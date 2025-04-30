@@ -88,10 +88,7 @@
       "target": "nsis"
     },
     "linux": {
-      "target": [
-        "deb",
-        "AppImage"
-      ],
+      "target": "deb",
       "maintainer": "Nikita Pasynkov <xpasyn00@stud.fit.vut.cz>",
       "category": "Utility"
     }
