@@ -26,9 +26,9 @@ pack: clean install-deps doc stddev
 	# Download installer from the release
 	@curl -L --output temp/install/$(INSTALLER) https://github.com/$(REPO)/releases/download/v0.1.0/$(INSTALLER)
 	@cp ../stddev temp/install
-	@cp -r ../docs temp/doc
+	@cp -r ../docs/* temp/doc/
 	@cd ../ && rm -rf $(BUILT_FOLDERS) stddev
-	@rsync -a --exclude 'temp' --exclude 'prebuilt' --exclude 'docs' --exclude '*.zip' --exclude 'node_modules' --exclude 'dist' --exclude 'out' --exclude 'build' --exclude '.idea' --exclude "stddev" ../ temp/repo/
+	@rsync -a --exclude 'temp' --exclude 'prebuilt' --exclude 'docs' --exclude 'node_modules' --exclude 'dist' --exclude 'out' --exclude 'build' --exclude '.idea' --exclude "stddev" --exclude "$(TEAM_FILENAME).zip" ../ temp/repo/
 
 	@cd temp && zip -r $(TEAM_FILENAME).zip doc/ install/ repo/
 	@mv temp/$(TEAM_FILENAME).zip ./
